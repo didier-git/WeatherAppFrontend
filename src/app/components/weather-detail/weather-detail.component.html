@@ -1,5 +1,5 @@
 <div class="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-4 my-10">
-   <div class="flex justify-center bg-green-700 text-white rounded w-52">
+   <div *ngIf="IsFavorite != 0" class="flex justify-center bg-green-700 text-white rounded w-52">
     <button (click)="addCityToFavorite(cityDetail.name)">Add favorites</button>
    </div>
     <!-- Detalle de la Ciudad -->
@@ -32,9 +32,9 @@
           </div>
           <!-- Temperaturas -->
           <div class="text-right">
-            <p class="text-lg font-semibold text-gray-800">      {{ this.fahrenheitToCelsius(forecast.main.temp)  }}°C</p>
-            <p class="text-sm text-gray-600">Sensación: {{ forecast.main.feels_like }}°C</p>
-            <p class="text-sm text-gray-600">Máx: {{ forecast.main.temp_max }}°C | Mín: {{ forecast.main.temp_min }}°C</p>
+            <p class="text-lg font-semibold text-gray-800">      {{ fahrenheitToCelsius(forecast.main.temp)  }}°C</p>
+            <p class="text-sm text-gray-600">Sensación: {{fahrenheitToCelsius(forecast.main.feels_like)}}°C</p>
+            <p class="text-sm text-gray-600">Máx: {{ fahrenheitToCelsius(forecast.main.temp_max) }}°C | Mín: {{ fahrenheitToCelsius(forecast.main.temp_min) }}°C</p>
           </div>
         </div> 
         <!-- Otros detalles del clima -->

@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { DataServiceService } from 'src/app/services/data-service.service';
+import { LoadingServiceService } from 'src/app/services/loading-service.service';
 import { cityFavorite } from 'src/app/Views/Response/cityFavoriteResponse';
 import { city } from 'src/app/Views/Response/cityResponse';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-favorite',
@@ -12,42 +15,85 @@ import { city } from 'src/app/Views/Response/cityResponse';
 export class ListFavoriteComponent implements OnInit  {
 
  cities :cityFavorite[]
+ 
 
- constructor(private service : DataServiceService, private router:Router) { 
+ constructor(private service : DataServiceService, private router:Router, private loading : LoadingServiceService) { 
  
   this.cities = [];
 
-  // this.cities= [
-  //   { id: 1, name: "Bogotá", temperature: 14, humidity: 80, description: "Ciudad fría y montañosa." },
-  //   { id: 2, name: "Medellín", temperature: 22, humidity: 70, description: "Ciudad de la eterna primavera." },
-  //   { id: 3, name: "Cali", temperature: 26, humidity: 60, description: "Ciudad cálida, capital de la salsa." },
-  //   { id: 4, name: "Barranquilla", temperature: 30, humidity: 75, description: "Ciudad costera y carnavalesca." },
-  //   { id: 5, name: "Cartagena", temperature: 29, humidity: 85, description: "Ciudad histórica y turística en la costa." },
-  //   { id: 6, name: "Cúcuta", temperature: 28, humidity: 65, description: "Ciudad fronteriza con Venezuela." },
-  //   { id: 7, name: "Bucaramanga", temperature: 23, humidity: 70, description: "Ciudad de parques y montañas." },
-  //   { id: 8, name: "Pereira", temperature: 21, humidity: 75, description: "Ciudad cafetera y cultural." },
-  //   { id: 9, name: "Santa Marta", temperature: 30, humidity: 80, description: "Ciudad turística y cercana al Parque Tayrona." },
-  //   { id: 10, name: "Manizales", temperature: 18, humidity: 78, description: "Ciudad en las montañas, con clima fresco." },
-  // ];
+  
  }
   ngOnInit(): void {
+
+    this.loading.isLoading.next(true);
 
     this.service.getListCitiesFavorite().subscribe({
       next:(resp:any) => {
         this.cities = resp.favorites;
         console.log(resp.favorites);
-        
+        this.loading.isLoading.next(false);
       },
       error: (error) => {
-        console.error('Error retrieving favorite cities: ', error);
+        this.loading.isLoading.next(false);
       }
-
     });
-  
-
   }
-
   showWeatherDetail(name : string){
-    this.router.navigateByUrl(`weather-detail?name=${name}`);  // Navigate to weather details page with selected city name
+    this.router.navigateByUrl(`weather-detail?name=${name}&favorite=${1}`);  // Navigate to weather details page with selected city name
+  }
+  deleteCity(id: number){
+
+    Swal.fire({
+      title: 'Está seguro?',
+      text: '¿Desea eliminar la ciudad de la lista de favoritos?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'bg-red-600 text-white px-4 py-2 rounded',
+        cancelButton: 'bg-gray-300 text-black px-4 py-2 rounded'
+      },
+      buttonsStyling: false
+    }).then((result)=> {
+
+      if(result.isConfirmed) {
+        this.loading.isLoading.next(true);
+        this.service.deleteCityFavorite(id).subscribe({
+          next:(resp:any) => {
+            Swal.fire({
+              icon:'success',
+              title: 'Eliminación exitosa',
+              text: 'La ciudad fue eliminada correctamente de la lista de favoritos',
+              customClass: {
+                confirmButton: 'bg-green-600  text-white px-4 py-2 rounded',
+              },
+              buttonsStyling: false
+            }).then((result)=>{
+                 if(result.isConfirmed) {
+                   this.ngOnInit();
+                 }
+
+            });
+            this.loading.isLoading.next(false);
+          },
+          error: (error) => {
+            Swal.fire({
+              icon:'error',
+              title: 'Error',
+              text: 'Ha ocurrido un error al eliminar la ciudad de la lista de favoritos',
+              customClass: {
+                confirmButton: 'bg-green-600  text-white px-4 py-2 rounded',
+              },
+              buttonsStyling: false
+            });
+            this.loading.isLoading.next(false);
+          }
+        })
+      }
+    })
+
+    
+    
   }
 }

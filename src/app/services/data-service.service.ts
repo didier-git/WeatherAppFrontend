@@ -31,6 +31,18 @@ export class DataServiceService {
      return this.http.get(`${this.apiurl}/api/ciudades/favoritas`);
    }
 
+   deleteCityFavorite(city: number){
+    return this.http.delete(`${this.apiurl}/api/ciudades/favoritas/${city}`);
+   }
+
+
+   getAllCitiesNew(page: number, nombre_ciudad: string = ''){
+    return this.http.get(`${this.apiurl}/api/ciudades?page=${page}&q=${nombre_ciudad}`);
+  }
+
+
+   
+
 
 
 }

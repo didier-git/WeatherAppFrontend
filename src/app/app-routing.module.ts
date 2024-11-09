@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, CanActivate } from '@angular/router';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { BillingComponent } from './components/billing/billing.component';
@@ -12,6 +12,7 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { WeatherDetailComponent } from './components/weather-detail/weather-detail.component';
 import { SearchCitiesComponent } from './components/search-cities/search-cities.component';
 import { ListFavoriteComponent } from './components/list-favorite/list-favorite.component';
+import { GuardGuard } from './guard.guard';
 
 const routes: Routes = [
 
@@ -19,7 +20,7 @@ const routes: Routes = [
     children: [
       { path: '', component: SearchCitiesComponent },
       { path: 'weather-detail', component: WeatherDetailComponent },
-      { path: 'list-favorites', component: ListFavoriteComponent },
+      { path: 'list-favorites', canActivate:[GuardGuard], component: ListFavoriteComponent },
     ]
   },
   {path: 'billing', component: BillingComponent},

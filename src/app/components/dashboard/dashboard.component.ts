@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthServiceService } from 'src/app/services/auth-service.service';
 import { city } from 'src/app/Views/Response/cityResponse';
 
 @Component({
@@ -13,13 +14,29 @@ export class DashboardComponent implements OnInit {
 
 
 
- constructor(private router : Router) {
+ constructor(private router : Router, private authService : AuthServiceService){
   
   }
   ngOnInit(): void {
    
+    this.IsLogued = localStorage.getItem('token')? true : false;
+
+  }
 
 
+  signOut(){
+    this.authService.singOut().subscribe({
+      next: () => {
+    
+        this.router.navigateByUrl('sign-in');
+        localStorage.removeItem('token');
+        this.IsLogued = false;
+      },
+      error: (err) => {
+        console.error('Error: ', err);
+      }
+    });
+   
   }
 
 

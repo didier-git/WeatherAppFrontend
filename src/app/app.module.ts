@@ -18,6 +18,7 @@ import { SearchCitiesComponent } from './components/search-cities/search-cities.
 import { ReactiveFormsModule } from '@angular/forms';
 import { ListFavoriteComponent } from './components/list-favorite/list-favorite.component';
 import { AuthInterceptor } from './auth.interceptor';
+import { LoadingComponent } from './components/loading/loading.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { AuthInterceptor } from './auth.interceptor';
     LayoutComponent,
     WeatherDetailComponent,
     SearchCitiesComponent,
-    ListFavoriteComponent
+    ListFavoriteComponent,
+    LoadingComponent
     
   ],
   imports: [

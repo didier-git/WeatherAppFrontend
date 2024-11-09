@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { LoadingServiceService } from 'src/app/services/loading-service.service';
 import { register } from 'src/app/Views/Request/registerRequest';
 import Swal from 'sweetalert2';
 
@@ -16,7 +17,7 @@ export class SignUpComponent implements OnInit {
     form!: FormGroup;
     request : register
 
-    constructor(private formbuilder: FormBuilder, private service : AuthServiceService, private router: Router) {
+    constructor(private formbuilder: FormBuilder, private service : AuthServiceService, private router: Router, private loading: LoadingServiceService) {
       this.request = 
       {
         name: '',
@@ -47,7 +48,7 @@ export class SignUpComponent implements OnInit {
         })
         return;
       }
-
+      this.loading.isLoading.next(true);
       this.request = this.form.value;
       this.service.register(this.request).subscribe({
         next:(resp:any)=>{
@@ -55,11 +56,16 @@ export class SignUpComponent implements OnInit {
             icon: 'success',
             title: 'Registro exitoso',
             text: 'Te has registrado correctamente',
+            customClass: {
+              confirmButton: 'bg-green-600 text-white px-4 py-2 rounded',
+            },
+            buttonsStyling: false
           }).then(resp =>{
             if(resp.isConfirmed == true){
                 this.router.navigateByUrl('sign-in');
             }
           })
+          this.loading.isLoading.next(false);
         },
         error:(error:any)=>{
           Swal.fire({
@@ -67,6 +73,7 @@ export class SignUpComponent implements OnInit {
             title: 'Error al registrar',
             text: 'Hubo un error al registrar, intente nuevamente',
           })
+          this.loading.isLoading.next(false);
         }
       });
     }

@@ -23,5 +23,9 @@ export class AuthServiceService {
     return this.http.post(`${this.apiurl}/api/users/login`,register);
   }
 
+  singOut(){
+    return this.http.post(`${this.apiurl}/api/users/logout`,{});
+  }
+
   
 }
