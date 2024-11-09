@@ -1,0 +1,50 @@
+<div class="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-4 my-10">
+   <div class="flex justify-center bg-green-700 text-white rounded w-52">
+    <button (click)="addCityToFavorite(cityDetail.name)">Add favorites</button>
+   </div>
+    <!-- Detalle de la Ciudad -->
+    <div class="text-center">
+      <h2 class="text-2xl font-semibold text-gray-800">{{ cityDetail.name }}</h2>
+      <p class="text-gray-600">{{ cityDetail.country }}</p>
+      <p class="text-sm text-gray-500">Población: {{ cityDetail.population | number }}</p>
+      <p class="text-sm text-gray-500">
+        Amanecer: {{ (cityDetail.sunrise * 1000) | date: 'hh:mm a' : 'UTC' }}
+        | Atardecer: {{ (cityDetail.sunset * 1000) | date: 'hh:mm a' : 'UTC' }}
+      </p>
+    </div>
+  
+    <!-- Pronósticos del Clima -->
+    <div class="space-y-6">
+      <h3 class="text-xl font-semibold text-white p-5 text-center bg-slate-500 rounded">Pronósticos</h3>
+      <div *ngFor="let forecast of cityDetail.list" class="p-2 bg-gray-100 rounded-lg shadow">
+        <div class="flex items-center justify-between">
+          <!-- Detalles principales del clima -->
+          <div class="flex items-center space-x-4">
+            <img
+              [src]="'https://openweathermap.org/img/wn/' + forecast.weather[0].icon + '@2x.png'"
+              alt="{{ forecast.weather[0].description }}"
+              class="w-12 h-12"
+            />
+            <div>
+              <p class="text-lg font-semibold">{{ forecast.weather[0].main }}</p>
+              <p class="text-sm text-gray-500">{{ forecast.weather[0].description }}</p>
+            </div>
+          </div>
+          <!-- Temperaturas -->
+          <div class="text-right">
+            <p class="text-lg font-semibold text-gray-800">      {{ this.fahrenheitToCelsius(forecast.main.temp)  }}°C</p>
+            <p class="text-sm text-gray-600">Sensación: {{ forecast.main.feels_like }}°C</p>
+            <p class="text-sm text-gray-600">Máx: {{ forecast.main.temp_max }}°C | Mín: {{ forecast.main.temp_min }}°C</p>
+          </div>
+        </div> 
+        <!-- Otros detalles del clima -->
+        <div class="flex justify-between mt-4">
+          <p class="text-sm text-gray-500">Humedad: {{ forecast.main.humidity }}%</p>
+          <p class="text-sm text-gray-500">Presión: {{ forecast.main.pressure }} hPa</p>
+          <p class="text-sm text-gray-500">Nivel del mar: {{ forecast.main.sea_level }} hPa</p>
+          <p class="text-sm text-gray-500">Nivel del suelo: {{ forecast.main.grnd_level }} hPa</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
